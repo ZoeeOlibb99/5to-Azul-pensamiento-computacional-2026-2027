@@ -241,3 +241,40 @@ Algoritmo EvaluacionEstudianteMejorado
 FinAlgoritmo
 
 ```
+
+### Tarea 29/10/2026
+
+### Principio de funcionamiento de un servomotor
+
+Los servomotores funcionan mediante un sistema de control de lazo cerrado. Reciben una señal PWM (Modulación por Ancho de Pulsos) con una frecuencia estándar de $50\text{ Hz}$ (un pulso cada $20\text{ ms}$). La duración del pulso determina la posición angular del eje: por lo general, un pulso de 1 posiciona el motor a 0, de 1.5 a 90 y de 2 a 180. Internamente, un circuito de control compara esta señal de entrada con la posición actual obtenida por un potenciómetro acoplado al eje y ajusta el motor mediante un controlador de corriente continua y una caja de engranajes.
+
+### Conexiones básicas (alimentación, tierra y señal)
+
+Los servomotores estándar cuentan con un cable de tres hilos:
+
+* **Alimentación (VCC):** Generalmente de color rojo, se conecta a la fuente de voltaje positiva (comúnmente 5 para servos pequeños).
+* **Tierra (GND):** De color marrón, negro o café, se conecta al pin de tierra común del circuito.
+* **Señal (PWM):** De color amarillo o naranja, se conecta a un pin digital PWM de la placa Arduino para enviar las instrucciones de movimiento.
+
+### Control mediante programación en Arduino
+
+Para controlar un servomotor desde Arduino, se utilizan los pines digitales configurados como salidas PWM. Mediante código, se envían trenes de pulsos periódicos que indican al circuito interno la posición exacta deseada. El microcontrolador se encarga de generar estas señales de control mientras el usuario solo debe definir los grados objetivo en el programa.
+
+### Uso de la librería Servo
+
+Arduino incluye de forma nativa la librería `Servo.h` para simplificar el control de estos motores sin necesidad de programar los pulsos manualmente:
+
+* Se debe incluir la librería al inicio del código con `#include <Servo.h>`.
+* Se crea un objeto de tipo Servo (por ejemplo, `Servo myservo;`).
+* En la función `setup()`, se vincula el objeto a un pin digital usando `myservo.attach(pin);`.
+* En el bucle principal `loop()`, se define la posición mediante la instrucción `myservo.write(angulo);`, donde el ángulo varía habitualmente entre 0 y 180.
+
+### Consideraciones para la alimentación de múltiples servomotores
+
+Al alimentar múltiples servomotores o modelos de alta potencia, nunca se debe usar la salida de la placa Arduino, ya que el consumo de corriente (especialmente en los picos de arranque o bloqueo) puede sobrecargar el regulador interno, provocar caídas de tensión y reiniciar la placa. Es obligatorio utilizar una fuente de alimentación externa adecuada para los motores, asegurándose de conectar las masas (GND) de la fuente externa y del Arduino juntas para tener una referencia común.
+
+### Ejemplos de movimiento angular y control de posición
+
+* **Movimiento de barrido (*Sweep*):** Consiste en desplazar el eje del motor de manera continua y automatizada de $0^\circ$ a $180^\circ$ y viceversa utilizando bucles incrementales y decrementales junto con pequeños retrasos de tiempo (`delay`).
+* **Control de posición por potenciómetro (*Knob*):** Se lee el valor analógico proveniente de un potenciómetro (de $0$ a $1023$), se reescala o mapea al rango angular del servo mediante la función `map()` y se asigna directamente al motor para que su eje siga el movimiento manual de la perilla.
+
